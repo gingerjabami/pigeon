@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message - Pigeon</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .message-form-container {
+            max-width: 600px;
+            margin: 120px auto 40px;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 0.8rem;
+            border: 2px solid var(--secondary-blue);
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .send-button {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .send-button:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            animation: modalPopIn 0.3s ease-out;
+        }
+
+        @keyframes modalPopIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal i {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-dove"></i>
+            <span>Pigeon</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="send-message.html" class="active">Send Message</a></li>
+            <li><a href="send-package.html">Send Package</a></li>
+            <li><a href="big-pop.html">Big Pop</a></li>
+            <li><a href="orders.html">Orders</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div class="message-form-container">
+        <h2><i class="fas fa-envelope"></i> Send a Message</h2>
+        <form class="message-form" id="messageForm">
+            <div class="form-group">
+                <label for="recipientName">Recipient's Name</label>
+                <input type="text" id="recipientName" required>
+            </div>
+            <div class="form-group">
+                <label for="recipientLocation">Recipient's Location</label>
+                <input type="text" id="recipientLocation" required>
+            </div>
+            <div class="form-group">
+                <label for="messageText">Your Message</label>
+                <textarea id="messageText" required></textarea>
+            </div>
+            <button type="submit" class="send-button">
+                <i class="fas fa-paper-plane"></i> Send Message
+            </button>
+        </form>
+    </div>
+
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <i class="fas fa-dove"></i>
+            <h3>Your pigeon is on its way!</h3>
+            <p>We've dispatched our fastest pigeon to deliver your message.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="footer-info">
+                <p>&copy; 2024 Pigeon. All rights reserved.</p>
+                <p>Contact: hello@Pigeon.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        const messageForm = document.getElementById('messageForm');
+        const modal = document.getElementById('confirmationModal');
+        const closeModal = document.querySelector('.close-modal');
+
+        messageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const messageData = {
+                type: 'message',
+                recipientName: document.getElementById('recipientName').value,
+                recipientLocation: document.getElementById('recipientLocation').value,
+                messageText: document.getElementById('messageText').value
+            };
+
+            // Save to local storage
+            PigeonStorage.saveOrder(messageData);
+
+            // Show confirmation modal
+            modal.style.display = 'flex';
+
+            // Reset form
+            messageForm.reset();
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

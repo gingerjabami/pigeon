@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Pigeon</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 120px auto 40px;
+            padding: 2rem;
+        }
+
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-button {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary-blue);
+            border-radius: 5px;
+            background: white;
+            color: var(--primary-blue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-button.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--secondary-blue);
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .order-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .type-message {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .type-package {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .type-pop {
+            background-color: #fce4ec;
+            color: #c2185b;
+        }
+
+        .order-details {
+            margin-bottom: 1rem;
+        }
+
+        .order-details h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .order-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .order-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-in-progress {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--secondary-blue);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .orders-container {
+                padding: 1rem;
+            }
+
+            .orders-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .filter-controls {
+                flex-wrap: wrap;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-dove"></i>
+            <span>Pigeon</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="send-message.html">Send Message</a></li>
+            <li><a href="send-package.html">Send Package</a></li>
+            <li><a href="big-pop.html">Big Pop</a></li>
+            <li><a href="orders.html" class="active">Orders</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div class="orders-container">
+        <div class="orders-header">
+            <h2><i class="fas fa-list"></i> My Orders</h2>
+            <div class="filter-controls">
+                <button class="filter-button active" data-type="all">All Orders</button>
+                <button class="filter-button" data-type="message">Messages</button>
+                <button class="filter-button" data-type="package">Packages</button>
+                <button class="filter-button" data-type="pop">Pops</button>
+            </div>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="searchOrders" placeholder="Search orders...">
+        </div>
+
+        <div class="orders-grid" id="ordersGrid">
+            <!-- Orders will be populated here -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="footer-info">
+                <p>&copy; 2024 Pigeon. All rights reserved.</p>
+                <p>Contact: hello@Pigeon.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        const ordersGrid = document.getElementById('ordersGrid');
+        const filterButtons = document.querySelectorAll('.filter-button');
+        const searchInput = document.getElementById('searchOrders');
+        let currentFilter = 'all';
+
+        // Load and display orders
+        function loadOrders() {
+            const orders = PigeonStorage.getOrders();
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            const filteredOrders = orders.filter(order => {
+                const matchesFilter = currentFilter === 'all' || order.type === currentFilter;
+                const matchesSearch = JSON.stringify(order).toLowerCase().includes(searchTerm);
+                return matchesFilter && matchesSearch;
+            });
+
+            if (filteredOrders.length === 0) {
+                ordersGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No orders found</h3>
+                        <p>Try adjusting your filters or search terms</p>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersGrid.innerHTML = filteredOrders.map(order => {
+                const orderTypeIcon = {
+                    message: 'fa-envelope',
+                    package: 'fa-box',
+                    pop: 'fa-gift'
+                }[order.type];
+
+                const orderTypeClass = {
+                    message: 'type-message',
+                    package: 'type-package',
+                    pop: 'type-pop'
+                }[order.type];
+
+                const orderTitle = {
+                    message: 'Message to',
+                    package: 'Package for',
+                    pop: 'Pop for'
+                }[order.type];
+
+                return `
+                    <div class="order-card">
+                        <span class="order-type ${orderTypeClass}">
+                            <i class="fas ${orderTypeIcon}"></i> ${order.type.charAt(0).toUpperCase() + order.type.slice(1)}
+                        </span>
+                        <div class="order-details">
+                            <h3>${orderTitle} ${order.recipientName}</h3>
+                            ${order.type === 'message' ? `
+                                <p>${order.messageText ? order.messageText.substring(0, 50) + '...' : 'No message content'}</p>
+                            ` : order.type === 'package' ? `
+                                <p>Weight: ${order.packageWeight}</p>
+                                <p>${order.packageName}</p>
+                            ` : `
+                                <p>Size: ${order.popSize}</p>
+                                <p>Color: ${order.popColor}</p>
+                            `}
+                        </div>
+                        <div class="order-meta">
+                            <p>Order #${order.id.toString().slice(-6)}</p>
+                            <p>Ordered: ${new Date(order.timestamp).toLocaleDateString()}</p>
+                        </div>
+                        <div class="order-status">
+                            <span class="status-badge status-${order.status.toLowerCase().replace(' ', '-')}">
+                                ${order.status}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                currentFilter = button.dataset.type;
+                loadOrders();
+            });
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', loadOrders);
+
+        // Initial load
+        loadOrders();
+
+        // Refresh orders every 30 seconds
+        setInterval(loadOrders, 30000);
+    </script>
+</body>
+</html>

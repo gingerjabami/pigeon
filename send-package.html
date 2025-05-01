@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Package - Pigeon</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .package-container {
+            max-width: 1200px;
+            margin: 120px auto 40px;
+            padding: 2rem;
+        }
+
+        .package-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.8rem;
+            border: 2px solid var(--secondary-blue);
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .send-button {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .send-button:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .orders-table th,
+        .orders-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .orders-table th {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .orders-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-in-progress {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-button {
+            padding: 0.3rem 0.8rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-button {
+            background-color: var(--secondary-blue);
+            color: white;
+        }
+
+        .cancel-button {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .package-container {
+                padding: 1rem;
+            }
+
+            .orders-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-dove"></i>
+            <span>Pigeon</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="send-message.html">Send Message</a></li>
+            <li><a href="send-package.html" class="active">Send Package</a></li>
+            <li><a href="big-pop.html">Big Pop</a></li>
+            <li><a href="orders.html">Orders</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div class="package-container">
+        <div class="package-form">
+            <h2><i class="fas fa-box"></i> Send a Package</h2>
+            <form id="packageForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="packageName">Package Name/Description</label>
+                        <input type="text" id="packageName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="packageWeight">Package Weight</label>
+                        <select id="packageWeight" required>
+                            <option value="">Select weight range</option>
+                            <option value="light">Light (0-500g)</option>
+                            <option value="medium">Medium (500g-2kg)</option>
+                            <option value="heavy">Heavy (2kg-5kg)</option>
+                            <option value="extra">Extra Heavy (5kg+)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipientName">Recipient's Name</label>
+                        <input type="text" id="recipientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipientLocation">Recipient's Location</label>
+                        <input type="text" id="recipientLocation" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="packageDetails">Additional Details</label>
+                    <textarea id="packageDetails"></textarea>
+                </div>
+                <button type="submit" class="send-button">
+                    <i class="fas fa-paper-plane"></i> Send Package
+                </button>
+            </form>
+        </div>
+
+        <h3>Your Package Orders</h3>
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Package ID</th>
+                    <th>Description</th>
+                    <th>Weight</th>
+                    <th>Recipient</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+                <!-- Orders will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <i class="fas fa-dove"></i>
+            <h3>Package Registered Successfully!</h3>
+            <p>Our strongest pigeon is getting ready to deliver your package.</p>
+        </div>
+    </div>
+
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Package Details</h3>
+            <div id="packageDetails"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="footer-info">
+                <p>&copy; 2024 Pigeon. All rights reserved.</p>
+                <p>Contact: hello@Pigeon.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        const packageForm = document.getElementById('packageForm');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const detailsModal = document.getElementById('detailsModal');
+        const closeModals = document.querySelectorAll('.close-modal');
+        const ordersTableBody = document.getElementById('ordersTableBody');
+
+        // Load and display orders
+        function loadOrders() {
+            const orders = PigeonStorage.getOrders().filter(order => order.type === 'package');
+            ordersTableBody.innerHTML = orders.map(order => `
+                <tr>
+                    <td>#${order.id.toString().slice(-6)}</td>
+                    <td>${order.packageName}</td>
+                    <td>${order.packageWeight}</td>
+                    <td>${order.recipientName}</td>
+                    <td><span class="status-badge status-${order.status.toLowerCase().replace(' ', '-')}">${order.status}</span></td>
+                    <td class="action-buttons">
+                        <button class="action-button view-button" onclick="viewDetails(${order.id})">View</button>
+                        ${order.status === 'In Progress' ? `<button class="action-button cancel-button" onclick="cancelOrder(${order.id})">Cancel</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Handle form submission
+        packageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const packageData = {
+                type: 'package',
+                packageName: document.getElementById('packageName').value,
+                packageWeight: document.getElementById('packageWeight').value,
+                recipientName: document.getElementById('recipientName').value,
+                recipientLocation: document.getElementById('recipientLocation').value,
+                packageDetails: document.getElementById('packageDetails').value
+            };
+
+            // Save to local storage
+            PigeonStorage.saveOrder(packageData);
+
+            // Show confirmation modal
+            confirmationModal.style.display = 'flex';
+
+            // Reset form and reload orders
+            packageForm.reset();
+            loadOrders();
+        });
+
+        // View package details
+        function viewDetails(orderId) {
+            const orders = PigeonStorage.getOrders();
+            const order = orders.find(o => o.id === orderId);
+            
+            if (order) {
+                const detailsContent = document.getElementById('packageDetails');
+                detailsContent.innerHTML = `
+                    <p><strong>Package ID:</strong> #${order.id.toString().slice(-6)}</p>
+                    <p><strong>Description:</strong> ${order.packageName}</p>
+                    <p><strong>Weight:</strong> ${order.packageWeight}</p>
+                    <p><strong>Recipient:</strong> ${order.recipientName}</p>
+                    <p><strong>Location:</strong> ${order.recipientLocation}</p>
+                    <p><strong>Status:</strong> ${order.status}</p>
+                    <p><strong>Additional Details:</strong> ${order.packageDetails || 'None'}</p>
+                    <p><strong>Order Date:</strong> ${new Date(order.timestamp).toLocaleString()}</p>
+                `;
+                detailsModal.style.display = 'flex';
+            }
+        }
+
+        // Cancel order
+        function cancelOrder(orderId) {
+            if (confirm('Are you sure you want to cancel this order?')) {
+                PigeonStorage.updateOrderStatus(orderId, 'Cancelled');
+                loadOrders();
+            }
+        }
+
+        // Close modals
+        closeModals.forEach(closeBtn => {
+            closeBtn.addEventListener('click', () => {
+                confirmationModal.style.display = 'none';
+                detailsModal.style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === confirmationModal || e.target === detailsModal) {
+                confirmationModal.style.display = 'none';
+                detailsModal.style.display = 'none';
+            }
+        });
+
+        // Load orders on page load
+        loadOrders();
+    </script>
+</body>
+</html>

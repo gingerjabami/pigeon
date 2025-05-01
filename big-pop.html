@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Pop - Pigeon</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .pop-container {
+            max-width: 1200px;
+            margin: 120px auto 40px;
+            padding: 2rem;
+        }
+
+        .pop-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.8rem;
+            border: 2px solid var(--secondary-blue);
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .image-preview {
+            width: 200px;
+            height: 200px;
+            border: 2px dashed var(--secondary-blue);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .price-calculator {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .total-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            text-align: right;
+            margin-top: 1rem;
+        }
+
+        .premium-features {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #333;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .premium-button {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #333;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .premium-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .pricing-table th,
+        .pricing-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pricing-table th {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #666;
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .payment-button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .paypal-button {
+            background-color: #0070ba;
+            color: white;
+        }
+
+        .stripe-button {
+            background-color: #635bff;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .pop-container {
+                padding: 1rem;
+            }
+
+            .pricing-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-dove"></i>
+            <span>Pigeon</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="send-message.html">Send Message</a></li>
+            <li><a href="send-package.html">Send Package</a></li>
+            <li><a href="big-pop.html" class="active">Big Pop</a></li>
+            <li><a href="orders.html">Orders</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div class="pop-container">
+        <div class="pop-form">
+            <h2><i class="fas fa-gift"></i> Schedule a Big Pop</h2>
+            <form id="popForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="recipientName">Recipient's Name</label>
+                        <input type="text" id="recipientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="popTime">Pop Time</label>
+                        <input type="datetime-local" id="popTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="popSize">Pop Size</label>
+                        <select id="popSize" required>
+                            <option value="small">Small Pop ($10)</option>
+                            <option value="medium">Medium Pop ($20)</option>
+                            <option value="large">Large Pop ($30)</option>
+                            <option value="premium">Premium Pop ($50)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="popColor">Pop Color</label>
+                        <select id="popColor" required>
+                            <option value="classic">Classic White ($0)</option>
+                            <option value="rainbow">Rainbow ($5)</option>
+                            <option value="gold">Gold ($10)</option>
+                            <option value="premium">Premium Glitter ($15)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="recipientPhoto">Upload Recipient's Photo</label>
+                    <input type="file" id="recipientPhoto" accept="image/*">
+                    <div class="image-preview" id="imagePreview">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                </div>
+
+                <div class="price-calculator">
+                    <h3>Price Calculator</h3>
+                    <div id="priceBreakdown"></div>
+                    <div class="total-price">Total: $<span id="totalPrice">0</span></div>
+                </div>
+
+                <button type="submit" class="premium-button">
+                    <i class="fas fa-paper-plane"></i> Schedule Pop
+                </button>
+            </form>
+        </div>
+
+        <div class="premium-features">
+            <h3><i class="fas fa-crown"></i> Premium Features</h3>
+            <p>Upgrade to access exclusive pop effects and premium delivery options!</p>
+            <table class="pricing-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Basic</th>
+                        <th>Premium</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Pop Sizes</td>
+                        <td>Small, Medium</td>
+                        <td>All sizes + Custom</td>
+                    </tr>
+                    <tr>
+                        <td>Colors</td>
+                        <td>Classic, Rainbow</td>
+                        <td>All colors + Glitter</td>
+                    </tr>
+                    <tr>
+                        <td>Effects</td>
+                        <td>Basic</td>
+                        <td>Premium + Custom</td>
+                    </tr>
+                    <tr>
+                        <td>Delivery Time</td>
+                        <td>Standard</td>
+                        <td>Priority</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="premiumModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <i class="fas fa-crown" style="color: #ffd700; font-size: 3rem;"></i>
+            <h3>Upgrade to Premium</h3>
+            <p>Get access to exclusive pop effects and premium delivery options!</p>
+            <div class="payment-options">
+                <button class="payment-button paypal-button">
+                    <i class="fab fa-paypal"></i> PayPal
+                </button>
+                <button class="payment-button stripe-button">
+                    <i class="fab fa-stripe"></i> Stripe
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <i class="fas fa-dove"></i>
+            <h3>Your Big Pop has been scheduled!</h3>
+            <p>Our most talented pigeons are preparing for the surprise.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="footer-info">
+                <p>&copy; 2024 Pigeon. All rights reserved.</p>
+                <p>Contact: hello@Pigeon.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        const popForm = document.getElementById('popForm');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const premiumModal = document.getElementById('premiumModal');
+        const closeModals = document.querySelectorAll('.close-modal');
+        const imagePreview = document.getElementById('imagePreview');
+        const recipientPhoto = document.getElementById('recipientPhoto');
+        const priceBreakdown = document.getElementById('priceBreakdown');
+        const totalPriceSpan = document.getElementById('totalPrice');
+
+        const prices = {
+            size: {
+                small: 10,
+                medium: 20,
+                large: 30,
+                premium: 50
+            },
+            color: {
+                classic: 0,
+                rainbow: 5,
+                gold: 10,
+                premium: 15
+            }
+        };
+
+        // Handle image preview
+        recipientPhoto.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Calculate and update price
+        function updatePrice() {
+            const size = document.getElementById('popSize').value;
+            const color = document.getElementById('popColor').value;
+            
+            const sizePrice = prices.size[size];
+            const colorPrice = prices.color[color];
+            const total = sizePrice + colorPrice;
+
+            priceBreakdown.innerHTML = `
+                <p>Pop Size (${size}): $${sizePrice}</p>
+                <p>Color (${color}): $${colorPrice}</p>
+            `;
+            totalPriceSpan.textContent = total;
+
+            // Show premium modal for premium options
+            if (size === 'premium' || color === 'premium') {
+                premiumModal.style.display = 'flex';
+            }
+        }
+
+        // Add event listeners for price updates
+        document.getElementById('popSize').addEventListener('change', updatePrice);
+        document.getElementById('popColor').addEventListener('change', updatePrice);
+
+        // Handle form submission
+        popForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const popData = {
+                type: 'pop',
+                recipientName: document.getElementById('recipientName').value,
+                popTime: document.getElementById('popTime').value,
+                popSize: document.getElementById('popSize').value,
+                popColor: document.getElementById('popColor').value,
+                totalPrice: parseFloat(totalPriceSpan.textContent)
+            };
+
+            // Save to local storage
+            PigeonStorage.saveOrder(popData);
+
+            // Show confirmation modal
+            confirmationModal.style.display = 'flex';
+
+            // Reset form
+            popForm.reset();
+            imagePreview.innerHTML = '<i class="fas fa-upload"></i>';
+            updatePrice();
+        });
+
+        // Close modals
+        closeModals.forEach(closeBtn => {
+            closeBtn.addEventListener('click', () => {
+                confirmationModal.style.display = 'none';
+                premiumModal.style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === confirmationModal || e.target === premiumModal) {
+                confirmationModal.style.display = 'none';
+                premiumModal.style.display = 'none';
+            }
+        });
+
+        // Initialize price calculator
+        updatePrice();
+    </script>
+</body>
+</html>
